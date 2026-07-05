@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discord Bot - Galerie</title>
     <style>
-        /* =====================================================================
-           USER DESIGN TOKENS & RESET
-           ===================================================================== */
         :root {
             --bg-void:        #05070a;
             --bg-base:        #0a0d12;
@@ -67,8 +64,6 @@
         .header-logo { font-family: var(--font-display); font-weight: 800; font-size: 1.16rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; text-decoration: none; }
         .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-dim), var(--accent)); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; }
         .logo-text span { color: var(--accent-bright); }
-
-        /* DASHBOARD LAYOUT & SIDEBAR */
         .dashboard-layout { display: flex; height: calc(100vh - var(--header-h)); overflow: hidden; position: relative; z-index: 1; }
         .sidebar { width: var(--sidebar-w); background: rgba(16,20,27,0.98); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
         .sidebar-header { padding: 20px 16px 16px; border-bottom: 1px solid var(--border); }
@@ -79,7 +74,6 @@
         .nav-item:hover { background: var(--bg-raised); color: var(--text-secondary); }
         .nav-item.active { background: var(--accent-subtle); color: var(--accent-bright); border: 1px solid var(--border-accent); }
         
-        /* MAIN CONTENT & SEARCH */
         .main-content { flex: 1; overflow-y: auto; background: var(--bg-base); }
         .content-inner { padding: 32px 36px; max-width: 1100px; margin: 0 auto; }
         .content-header { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
@@ -91,7 +85,6 @@
         .search-input { padding: 9px 14px 9px 38px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.875rem; width: 240px; transition: all 0.2s; outline: none; }
         .search-input:focus { border-color: var(--border-accent); background: var(--bg-raised); box-shadow: 0 0 0 3px rgba(96,115,214,0.1); width: 280px; }
 
-        /* GRID & CARDS (Angepasst an dein Design) */
         .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
         .server-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; cursor: pointer; transition: all 0.25s var(--ease-smooth); position: relative; overflow: hidden; }
         .server-card:hover { border-color: var(--border-bright); transform: translateY(-4px); box-shadow: var(--shadow-sm); }
@@ -99,7 +92,6 @@
         .server-name { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; letter-spacing: -0.3px; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .server-status { font-size: 0.75rem; font-weight: 600; padding: 4px 12px; border-radius: var(--radius-full); background: rgba(96, 115, 214, 0.1); color: var(--accent-bright); border: 1px solid rgba(96, 115, 214, 0.25); }
 
-        /* MODAL / PLAYER (Neue CSS Regeln passend zum Theme) */
         .modal-overlay { position: fixed; inset: 0; background: rgba(5, 7, 10, 0.85); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s var(--ease-smooth); }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         .modal-content { background: var(--bg-surface); border: 1px solid var(--border-bright); padding: 20px; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); max-width: 90vw; max-height: 90vh; position: relative; text-align: center; display: flex; flex-direction: column; align-items: center; }
@@ -166,31 +158,22 @@
     </div>
 
     <script>
-        // ==========================================
-        // 1. HIER DEINE BILDER EINTRAGEN
-        // ==========================================
-const images = [
-    { filename: 'Embet-Banner.png', name: 'Systems Embed Banner', category: 'System' },
-    { filename: 'Modul-Banner_Muster.png', name: 'Mustermodul Beschreibung', category: 'Module' },
-    { filename: 'Willkommen-Banner.png', name: 'Willkommen auf diesem Server', category: 'Welcomer' }
-];
-
-        // ==========================================
-        // 2. LOGIK
-        // ==========================================
+        const images = [
+            { filename: 'Embet-Banner.png', name: 'Systems Embed Banner', category: 'System' },
+            { filename: 'Modul-Banner_Muster.png', name: 'Mustermodul Beschreibung', category: 'Module' },
+            { filename: 'Willkommen-Banner.png', name: 'Willkommen auf diesem Server', category: 'Welcomer' }
+        ];
         const grid = document.getElementById('imageGrid');
         const categoryList = document.getElementById('category-list');
         const searchInput = document.getElementById('searchInput');
         let currentCategory = 'Alle';
 
-        // Kategorien ermitteln
         const categories = ['Alle', ...new Set(images.map(img => img.category))];
 
         function init() {
             renderCategories();
             renderGrid(images);
 
-            // Suche Event Listener
             searchInput.addEventListener('input', (e) => {
                 filterImages(e.target.value, currentCategory);
             });
@@ -242,10 +225,6 @@ const images = [
             });
             renderGrid(filtered);
         }
-
-        // ==========================================
-        // 3. MODAL (PLAYER) LOGIK
-        // ==========================================
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImage');
         const modalTitle = document.getElementById('modalTitle');
@@ -263,12 +242,11 @@ const images = [
             setTimeout(() => { modalImg.src = ''; }, 300); // Reset nach Animation
         }
 
-        // Schließen wenn man auf den Hintergrund klickt
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
 
-        // Start
+
         init();
     </script>
 </body>
