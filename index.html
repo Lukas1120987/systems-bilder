@@ -18,12 +18,8 @@
             --accent-glow:    rgba(96, 115, 214, 0.18);
             --accent-subtle:  rgba(96, 115, 214, 0.06);
             --success:        #3bbf95;
-            --success-glow:   rgba(59, 191, 149, 0.16);
             --warning:        #c89d37;
             --danger:         #c75b73;
-            --danger-glow:    rgba(199, 91, 115, 0.18);
-            --purple:         #8f8fe8;
-            --cyan:           #5fb7cf;
             --text-primary:   #edf1f7;
             --text-secondary: #9aa4b4;
             --text-muted:     #667186;
@@ -37,14 +33,11 @@
             --radius-xl:  16px;
             --radius-full: 9999px;
             --shadow-sm:  0 1px 2px rgba(0,0,0,0.35);
-            --shadow-md:  0 6px 18px rgba(0,0,0,0.38);
             --shadow-lg:  0 16px 42px rgba(0,0,0,0.52);
-            --shadow-glow: 0 0 18px var(--accent-glow);
             --font-display: 'Arial', sans-serif;
             --font-body:    'Arial', sans-serif;
             --sidebar-w: 260px;
             --header-h:  64px;
-            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
             --brightness: 1;
         }
@@ -76,7 +69,7 @@
         
         .main-content { flex: 1; overflow-y: auto; background: var(--bg-base); }
         .content-inner { padding: 32px 36px; max-width: 1100px; margin: 0 auto; }
-        .content-header { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .content-header { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
         .content-header-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-bright); margin-bottom: 6px; }
         .content-header h1 { font-family: var(--font-display); font-size: 1.7rem; font-weight: 800; letter-spacing: -0.04em; }
         
@@ -84,41 +77,40 @@
         .search-input-wrapper svg { position: absolute; left: 12px; color: var(--text-muted); pointer-events: none; }
         .search-input { padding: 9px 14px 9px 38px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.875rem; width: 240px; transition: all 0.2s; outline: none; }
         .search-input:focus { border-color: var(--border-accent); background: var(--bg-raised); box-shadow: 0 0 0 3px rgba(96,115,214,0.1); width: 280px; }
+        /* Style für das clear 'x' in type="search" */
+        .search-input::-webkit-search-cancel-button { cursor: pointer; }
+
+        .result-stats { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; font-weight: 600; }
 
         .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-        .server-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; cursor: pointer; transition: all 0.25s var(--ease-smooth); position: relative; overflow: hidden; }
+        .server-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; cursor: pointer; transition: all 0.25s var(--ease-smooth); position: relative; overflow: hidden; animation: fadeIn 0.4s ease-out; }
         .server-card:hover { border-color: var(--border-bright); transform: translateY(-4px); box-shadow: var(--shadow-sm); }
-        .server-card img { width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); }
+        .server-card img { width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--bg-raised); }
         .server-name { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; letter-spacing: -0.3px; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .server-status { font-size: 0.75rem; font-weight: 600; padding: 4px 12px; border-radius: var(--radius-full); background: rgba(96, 115, 214, 0.1); color: var(--accent-bright); border: 1px solid rgba(96, 115, 214, 0.25); }
 
+        .empty-state { grid-column: 1/-1; padding: 40px; text-align: center; background: var(--bg-surface); border: 1px dashed var(--border-bright); border-radius: var(--radius-lg); color: var(--text-secondary); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        /* Modal */
         .modal-overlay { position: fixed; inset: 0; background: rgba(5, 7, 10, 0.85); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s var(--ease-smooth); }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-content { background: var(--bg-surface); border: 1px solid var(--border-bright); padding: 20px; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); max-width: 90vw; max-height: 90vh; position: relative; text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .modal-content img { max-width: 100%; max-height: 60vh; border-radius: var(--radius-md); margin-bottom: 16px; object-fit: contain; }
+        .modal-content { background: var(--bg-surface); border: 1px solid var(--border-bright); padding: 24px; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); max-width: 90vw; max-height: 90vh; position: relative; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .modal-content img { max-width: 100%; max-height: 55vh; border-radius: var(--radius-md); margin-bottom: 20px; object-fit: contain; background: var(--bg-raised); }
         .modal-close { position: absolute; top: -16px; right: -16px; width: 36px; height: 36px; background: var(--bg-raised); border: 1px solid var(--border-bright); border-radius: 50%; color: var(--text-primary); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; transition: all 0.2s; }
-        .modal-close:hover { background: var(--danger); border-color: var(--danger); }
-        .modal-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 4px; color: var(--text-primary); }
-        .modal-category { font-size: 0.8rem; color: var(--accent-bright); margin-bottom: 16px; }
+        .modal-close:hover { background: var(--danger); border-color: var(--danger); color: white; }
+        .modal-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 6px; color: var(--text-primary); }
+        .modal-category { font-size: 0.85rem; color: var(--accent-bright); margin-bottom: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* NEU: Button Styling */
-        .copy-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: var(--radius-md);
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-        .copy-btn:hover { background: var(--accent-bright); }
-        .copy-btn:active { transform: scale(0.96); }
-        .copy-btn.success { background: var(--success); }
+        .modal-actions { display: flex; gap: 12px; }
+        .btn { border: none; padding: 10px 20px; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; text-decoration: none; }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: var(--accent-bright); }
+        .btn-primary.success { background: var(--success); }
+        .btn-secondary { background: var(--bg-hover); color: var(--text-primary); border: 1px solid var(--border-bright); }
+        .btn-secondary:hover { background: var(--bg-raised); border-color: var(--text-secondary); }
     </style>
 </head>
 <body>
@@ -136,14 +128,11 @@
         <div class="dashboard-layout">
             <aside class="sidebar">
                 <div class="sidebar-header">
-                    <div class="server-info">
-                        Kategorien
-                    </div>
+                    <div class="server-info">Kategorien</div>
                 </div>
                 <div class="nav-section">
                     <div class="nav-section-label">Filter</div>
-                    <div id="category-list">
-                        </div>
+                    <div id="category-list"></div>
                 </div>
             </aside>
 
@@ -156,12 +145,13 @@
                         </div>
                         <div class="search-input-wrapper">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                            <input type="text" id="searchInput" class="search-input" placeholder="Bilder durchsuchen...">
+                            <input type="search" id="searchInput" class="search-input" placeholder="Bilder durchsuchen...">
                         </div>
                     </div>
+                    
+                    <div id="resultStats" class="result-stats"></div>
 
-                    <div id="imageGrid" class="server-grid">
-                        </div>
+                    <div id="imageGrid" class="server-grid"></div>
                 </div>
             </main>
         </div>
@@ -169,15 +159,21 @@
 
     <div id="imageModal" class="modal-overlay">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <button class="modal-close" onclick="closeModal()" title="Schließen (Esc)">&times;</button>
             <img id="modalImage" src="" alt="">
             <div class="modal-title" id="modalTitle">Titel</div>
             <div class="modal-category" id="modalCategory">Kategorie</div>
             
-            <button id="copyLinkBtn" class="copy-btn" onclick="copyImageUrl()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                <span>Link kopieren</span>
-            </button>
+            <div class="modal-actions">
+                <button id="copyLinkBtn" class="btn btn-primary" onclick="copyImageUrl()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <span>Link kopieren</span>
+                </button>
+                <a id="downloadBtn" href="#" download class="btn btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <span>Download</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -189,12 +185,13 @@
             { filename: 'bilder/Modul-Banner_Entbannung.png', name: 'Entbannungssystem', category: 'Module' },
             { filename: 'bilder/Willkommen-Banner.png', name: 'Willkommen auf diesem Server', category: 'Welcomer' }
         ];
+        
         const grid = document.getElementById('imageGrid');
         const categoryList = document.getElementById('category-list');
         const searchInput = document.getElementById('searchInput');
+        const resultStats = document.getElementById('resultStats');
         let currentCategory = 'Alle';
         
-        // NEU: Globale Variable für den aktuellen Bildlink
         let currentActiveImageUrl = '';
 
         const categories = ['Alle', ...new Set(images.map(img => img.category))];
@@ -206,6 +203,13 @@
             searchInput.addEventListener('input', (e) => {
                 filterImages(e.target.value, currentCategory);
             });
+            
+            // Escape Key Listener für das Modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && document.getElementById('imageModal').classList.contains('active')) {
+                    closeModal();
+                }
+            });
         }
 
         function renderCategories() {
@@ -216,7 +220,7 @@
                 navItem.textContent = cat;
                 navItem.onclick = () => {
                     currentCategory = cat;
-                    renderCategories(); // Update Active State
+                    renderCategories();
                     filterImages(searchInput.value, currentCategory);
                 };
                 categoryList.appendChild(navItem);
@@ -225,9 +229,15 @@
 
         function renderGrid(data) {
             grid.innerHTML = '';
+            resultStats.textContent = `${data.length} ${data.length === 1 ? 'Bild' : 'Bilder'} gefunden`;
             
             if (data.length === 0) {
-                grid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Keine Bilder gefunden.</p>';
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <svg width="40" height="40" style="margin-bottom: 12px; opacity: 0.5;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <h3>Keine Bilder gefunden</h3>
+                        <p>Versuche es mit einem anderen Suchbegriff oder Filter.</p>
+                    </div>`;
                 return;
             }
 
@@ -237,7 +247,7 @@
                 card.onclick = () => openModal(item);
                 
                 card.innerHTML = `
-                    <img src="${item.filename}" alt="${item.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMxYjIyMmQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzY2NzE4NiIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmlsZCBmZWhsdDwvdGV4dD48L3N2Zz4='">
+                    <img src="${item.filename}" alt="${item.name}" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMxYjIyMmQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzY2NzE4NiIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmlsZCBmZWhsdDwvdGV4dD48L3N2Zz4='">
                     <div class="server-name">${item.name}</div>
                     <div class="server-status">${item.category}</div>
                 `;
@@ -259,17 +269,21 @@
         const modalImg = document.getElementById('modalImage');
         const modalTitle = document.getElementById('modalTitle');
         const modalCategory = document.getElementById('modalCategory');
-        const copyBtn = document.getElementById('copyLinkBtn'); // NEU
+        const copyBtn = document.getElementById('copyLinkBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
 
         function openModal(item) {
             modalImg.src = item.filename;
             modalTitle.textContent = item.name;
             modalCategory.textContent = item.category;
             
-            // NEU: Absoluten Link aus dem Dateinamen generieren
             currentActiveImageUrl = new URL(item.filename, window.location.href).href;
             
-            // NEU: Button Status zurücksetzen
+            // Download Link aktualisieren
+            downloadBtn.href = item.filename;
+            downloadBtn.download = item.name.replace(/\s+/g, '_') + '.png';
+            
+            // Button Status zurücksetzen
             copyBtn.classList.remove('success');
             copyBtn.querySelector('span').textContent = 'Link kopieren';
 
@@ -278,20 +292,18 @@
 
         function closeModal() {
             modal.classList.remove('active');
-            setTimeout(() => { modalImg.src = ''; }, 300); // Reset nach Animation
+            setTimeout(() => { modalImg.src = ''; }, 300);
         }
 
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
 
-        // NEU: Funktion zum Kopieren des Links
         function copyImageUrl() {
             navigator.clipboard.writeText(currentActiveImageUrl).then(() => {
                 copyBtn.classList.add('success');
                 copyBtn.querySelector('span').textContent = 'Kopiert!';
                 
-                // Setze den Button nach 2 Sekunden wieder zurück
                 setTimeout(() => {
                     copyBtn.classList.remove('success');
                     copyBtn.querySelector('span').textContent = 'Link kopieren';
