@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Bot - Galerie</title>
+    <style>
+        /* =====================================================================
+           USER DESIGN TOKENS & RESET
+           ===================================================================== */
+        :root {
+            --bg-void:        #05070a;
+            --bg-base:        #0a0d12;
+            --bg-surface:     #10141b;
+            --bg-raised:      #151a22;
+            --bg-overlay:     #1b222d;
+            --bg-hover:       #212938;
+            --accent:         #6073d6;
+            --accent-bright:  #7f91e3;
+            --accent-dim:     #4658aa;
+            --accent-glow:    rgba(96, 115, 214, 0.18);
+            --accent-subtle:  rgba(96, 115, 214, 0.06);
+            --success:        #3bbf95;
+            --success-glow:   rgba(59, 191, 149, 0.16);
+            --warning:        #c89d37;
+            --danger:         #c75b73;
+            --danger-glow:    rgba(199, 91, 115, 0.18);
+            --purple:         #8f8fe8;
+            --cyan:           #5fb7cf;
+            --text-primary:   #edf1f7;
+            --text-secondary: #9aa4b4;
+            --text-muted:     #667186;
+            --text-faint:     #3b4556;
+            --border:         rgba(255,255,255,0.07);
+            --border-bright:  rgba(255,255,255,0.12);
+            --border-accent:  rgba(91, 110, 240, 0.4);
+            --radius-sm:  5px;
+            --radius-md:  8px;
+            --radius-lg:  12px;
+            --radius-xl:  16px;
+            --radius-full: 9999px;
+            --shadow-sm:  0 1px 2px rgba(0,0,0,0.35);
+            --shadow-md:  0 6px 18px rgba(0,0,0,0.38);
+            --shadow-lg:  0 16px 42px rgba(0,0,0,0.52);
+            --shadow-glow: 0 0 18px var(--accent-glow);
+            --font-display: 'Arial', sans-serif;
+            --font-body:    'Arial', sans-serif;
+            --sidebar-w: 260px;
+            --header-h:  64px;
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --brightness: 1;
+        }
+
+        body { filter: brightness(var(--brightness)); transition: filter 0.3s ease; }
+        #page-wrapper { filter: brightness(var(--brightness)); transition: filter 0.3s ease; }
+        
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); background: var(--bg-base); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        
+        .bg-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(96,115,214,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(96,115,214,0.02) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse 78% 58% at 50% 0%, black 38%, transparent 100%); }
+        .bg-glow-1 { position: fixed; top: -20%; left: -10%; width: 640px; height: 640px; background: radial-gradient(circle, rgba(96,115,214,0.05) 0%, transparent 68%); pointer-events: none; z-index: 0; }
+        
+        /* HEADER */
+        .site-header { position: sticky; top: 0; z-index: 200; height: var(--header-h); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; background: rgba(10, 13, 18, 0.9); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+        .header-logo { font-family: var(--font-display); font-weight: 800; font-size: 1.16rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-dim), var(--accent)); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; }
+        .logo-text span { color: var(--accent-bright); }
+
+        /* DASHBOARD LAYOUT & SIDEBAR */
+        .dashboard-layout { display: flex; height: calc(100vh - var(--header-h)); overflow: hidden; position: relative; z-index: 1; }
+        .sidebar { width: var(--sidebar-w); background: rgba(16,20,27,0.98); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
+        .sidebar-header { padding: 20px 16px 16px; border-bottom: 1px solid var(--border); }
+        .server-info { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 12px; font-weight: bold; }
+        .nav-section { padding: 12px 12px 4px; }
+        .nav-section-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-faint); padding: 0 8px; margin-bottom: 4px; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--radius-md); color: var(--text-muted); cursor: pointer; font-size: 0.84rem; font-weight: 600; transition: all 0.15s; position: relative; }
+        .nav-item:hover { background: var(--bg-raised); color: var(--text-secondary); }
+        .nav-item.active { background: var(--accent-subtle); color: var(--accent-bright); border: 1px solid var(--border-accent); }
+        
+        /* MAIN CONTENT & SEARCH */
+        .main-content { flex: 1; overflow-y: auto; background: var(--bg-base); }
+        .content-inner { padding: 32px 36px; max-width: 1100px; margin: 0 auto; }
+        .content-header { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .content-header-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-bright); margin-bottom: 6px; }
+        .content-header h1 { font-family: var(--font-display); font-size: 1.7rem; font-weight: 800; letter-spacing: -0.04em; }
+        
+        .search-input-wrapper { position: relative; display: flex; align-items: center; }
+        .search-input-wrapper svg { position: absolute; left: 12px; color: var(--text-muted); pointer-events: none; }
+        .search-input { padding: 9px 14px 9px 38px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.875rem; width: 240px; transition: all 0.2s; outline: none; }
+        .search-input:focus { border-color: var(--border-accent); background: var(--bg-raised); box-shadow: 0 0 0 3px rgba(96,115,214,0.1); width: 280px; }
+
+        /* GRID & CARDS (Angepasst an dein Design) */
+        .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+        .server-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; cursor: pointer; transition: all 0.25s var(--ease-smooth); position: relative; overflow: hidden; }
+        .server-card:hover { border-color: var(--border-bright); transform: translateY(-4px); box-shadow: var(--shadow-sm); }
+        .server-card img { width: 100%; height: 140px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); }
+        .server-name { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; letter-spacing: -0.3px; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .server-status { font-size: 0.75rem; font-weight: 600; padding: 4px 12px; border-radius: var(--radius-full); background: rgba(96, 115, 214, 0.1); color: var(--accent-bright); border: 1px solid rgba(96, 115, 214, 0.25); }
+
+        /* MODAL / PLAYER (Neue CSS Regeln passend zum Theme) */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(5, 7, 10, 0.85); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s var(--ease-smooth); }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-content { background: var(--bg-surface); border: 1px solid var(--border-bright); padding: 20px; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); max-width: 90vw; max-height: 90vh; position: relative; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .modal-content img { max-width: 100%; max-height: 70vh; border-radius: var(--radius-md); margin-bottom: 16px; object-fit: contain; }
+        .modal-close { position: absolute; top: -16px; right: -16px; width: 36px; height: 36px; background: var(--bg-raised); border: 1px solid var(--border-bright); border-radius: 50%; color: var(--text-primary); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; transition: all 0.2s; }
+        .modal-close:hover { background: var(--danger); border-color: var(--danger); }
+        .modal-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 4px; color: var(--text-primary); }
+        .modal-category { font-size: 0.8rem; color: var(--accent-bright); }
+    </style>
+</head>
+<body>
+    <div id="page-wrapper">
+        <div class="bg-grid"></div>
+        <div class="bg-glow-1"></div>
+
+        <header class="site-header">
+            <a href="#" class="header-logo">
+                <div class="logo-icon"></div>
+                <div class="logo-text">NRW<span>SYSTEMS</span></div>
+            </a>
+        </header>
+
+        <div class="dashboard-layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <div class="server-info">
+                        Kategorien
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-label">Filter</div>
+                    <div id="category-list">
+                        </div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div class="content-inner">
+                    <div class="content-header">
+                        <div>
+                            <div class="content-header-eyebrow">Datenbank</div>
+                            <h1>Bilderverwaltung</h1>
+                        </div>
+                        <div class="search-input-wrapper">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="searchInput" class="search-input" placeholder="Bilder durchsuchen...">
+                        </div>
+                    </div>
+
+                    <div id="imageGrid" class="server-grid">
+                        </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="imageModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <img id="modalImage" src="" alt="">
+            <div class="modal-title" id="modalTitle">Titel</div>
+            <div class="modal-category" id="modalCategory">Kategorie</div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. HIER DEINE BILDER EINTRAGEN
+        // ==========================================
+const images = [
+    { filename: 'Embet-Banner.png', name: 'Systems Embed Banner', category: 'System' },
+    { filename: 'Modul-Banner_Muster.png', name: 'Mustermodul Beschreibung', category: 'Module' },
+    { filename: 'Willkommen-Banner.png', name: 'Willkommen auf diesem Server', category: 'Welcomer' }
+];
+
+        // ==========================================
+        // 2. LOGIK
+        // ==========================================
+        const grid = document.getElementById('imageGrid');
+        const categoryList = document.getElementById('category-list');
+        const searchInput = document.getElementById('searchInput');
+        let currentCategory = 'Alle';
+
+        // Kategorien ermitteln
+        const categories = ['Alle', ...new Set(images.map(img => img.category))];
+
+        function init() {
+            renderCategories();
+            renderGrid(images);
+
+            // Suche Event Listener
+            searchInput.addEventListener('input', (e) => {
+                filterImages(e.target.value, currentCategory);
+            });
+        }
+
+        function renderCategories() {
+            categoryList.innerHTML = '';
+            categories.forEach(cat => {
+                const navItem = document.createElement('div');
+                navItem.className = `nav-item ${cat === currentCategory ? 'active' : ''}`;
+                navItem.textContent = cat;
+                navItem.onclick = () => {
+                    currentCategory = cat;
+                    renderCategories(); // Update Active State
+                    filterImages(searchInput.value, currentCategory);
+                };
+                categoryList.appendChild(navItem);
+            });
+        }
+
+        function renderGrid(data) {
+            grid.innerHTML = '';
+            
+            if (data.length === 0) {
+                grid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Keine Bilder gefunden.</p>';
+                return;
+            }
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'server-card';
+                card.onclick = () => openModal(item);
+                
+                card.innerHTML = `
+                    <img src="${item.filename}" alt="${item.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMxYjIyMmQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzY2NzE4NiIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmlsZCBmZWhsdDwvdGV4dD48L3N2Zz4='">
+                    <div class="server-name">${item.name}</div>
+                    <div class="server-status">${item.category}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterImages(searchTerm, category) {
+            const lowerSearch = searchTerm.toLowerCase();
+            const filtered = images.filter(img => {
+                const matchesSearch = img.name.toLowerCase().includes(lowerSearch) || img.filename.toLowerCase().includes(lowerSearch);
+                const matchesCategory = category === 'Alle' || img.category === category;
+                return matchesSearch && matchesCategory;
+            });
+            renderGrid(filtered);
+        }
+
+        // ==========================================
+        // 3. MODAL (PLAYER) LOGIK
+        // ==========================================
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalCategory = document.getElementById('modalCategory');
+
+        function openModal(item) {
+            modalImg.src = item.filename;
+            modalTitle.textContent = item.name;
+            modalCategory.textContent = item.category;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            setTimeout(() => { modalImg.src = ''; }, 300); // Reset nach Animation
+        }
+
+        // Schließen wenn man auf den Hintergrund klickt
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // Start
+        init();
+    </script>
+</body>
+</html>
