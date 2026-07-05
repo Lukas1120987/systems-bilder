@@ -21,5 +21,13 @@ Bilder-Datenbank (NRW Systems)
    - Pfad/Datei: bilder/Willkommen-Banner.png
    - Kategorie: Welcomer
 
+6. Fahrzeugsystem
+   - Pfad/Datei: bilder/Modul-Banner_Auto.png
+   - Kategorie: Module
+
+7. Personensystem
+   - Pfad/Datei: bilder/Modul-Banner_Person.png
+   - Kategorie: Module
+
 ========================================
 Gesamtanzahl: 5 Bilder
