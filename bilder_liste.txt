@@ -1,0 +1,25 @@
+Bilder-Datenbank (NRW Systems)
+========================================
+
+1. Systems Embed Banner
+   - Pfad/Datei: bilder/Embet-Banner.png
+   - Kategorie: System
+
+2. Mustermodul Beschreibung
+   - Pfad/Datei: bilder/Modul-Banner_Muster.png
+   - Kategorie: Module
+
+3. Case-System
+   - Pfad/Datei: bilder/Modul-Banner_Case.png
+   - Kategorie: Module
+
+4. Entbannungssystem
+   - Pfad/Datei: bilder/Modul-Banner_Entbannung.png
+   - Kategorie: Module
+
+5. Willkommen auf diesem Server
+   - Pfad/Datei: bilder/Willkommen-Banner.png
+   - Kategorie: Welcomer
+
+========================================
+Gesamtanzahl: 5 Bilder
